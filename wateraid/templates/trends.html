@@ -1,0 +1,377 @@
+{% extends "layout.html" %} {% block content %}
+<!DOCTYPE html>
+<style>
+  .card {
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 34, 51, 0.1);
+    box-shadow: 2px 4px 10px 0 rgba(0, 34, 51, 0.05),
+      2px 4px 10px 0 rgba(0, 34, 51, 0.05);
+    border-radius: 0.15rem;
+    margin-top: 10px;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+  #map {
+    height: 400px;
+    width: 100%;
+  }
+
+  h3 {
+    text-align: center;
+    color: #195c9d;
+  }
+
+  h5 {
+    text-align: center;
+    color: #195c9d;
+  }
+
+  p {
+    text-align: center;
+    color: #195c9d;
+  }
+
+  /* List styling code adapted from: https://catalin.red/css3-ordered-list-styles */
+  ol {
+    counter-reset: li;
+    list-style: none;
+    *list-style: decimal;
+    padding: 0;
+    margin-bottom: 4em;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    max-width: 85%;
+    max-height: 70%;
+  }
+
+  .rounded-list a {
+    position: relative;
+    display: block;
+    padding: 0.4em 0.4em 0.4em 2em;
+    *padding: 0.4em;
+    margin: 0.1em 1;
+    background: #ddd;
+    color: #444;
+    text-decoration: none;
+    border-radius: 0.3em;
+    transition: all 0.3s ease-out;
+    font-size: 1.5em;
+    margin-left: 50px;
+    max-width: 100%;
+  }
+
+  .rounded-list a:hover {
+    background: #eee;
+  }
+
+  .rounded-list a:hover:before {
+    transform: rotate(360deg);
+  }
+
+  .rounded-list a:before {
+    content: counter(li);
+    counter-increment: li;
+    position: absolute;
+    left: -1.3em;
+    top: 50%;
+    margin-top: -1.3em;
+    background: #87ceeb;
+    width: 2em;
+    line-height: 2em;
+    border: 0.3em solid #fff;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 2em;
+    transition: all 0.3s ease-out;
+  }
+
+  .center {
+    margin-left: 30px;
+  }
+</style>
+
+{% if search_count == 0 %}
+<br />
+<p>There are no trends to display! Start your search for articles first!</p>
+{% else %}
+<div class="container">
+  <div class="row">
+    <div class="col-4">
+      <div class="card">
+        <h3><b> {{search_count}} </b></h3>
+        <p>Total number of searches performed</p>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <h3><b> {{count_today}} </b></h3>
+        <p>Number of searches performed today</p>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <h3><b> {{users_count}} </b></h3>
+        <p>Number of registered users</p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-5">
+      <div class="card" style="width: 600px; height: 435px">
+        <h5>Top 15 Concepts</h5>
+        <div id="concepts" class="center"></div>
+      </div>
+    </div>
+    <div class="col-7">
+      <div class="card">
+        <h5>Top 10 Locations</h5>
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <div class="card">
+        <h5>Top 30 Keywords</h5>
+        <img
+          src="data:image/png;base64,{{keywords_cloud}}"
+          style="width: 100%; height: 100%"
+        />
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="card" style="width: 600px; height: 380px">
+        <h5 style="margin-bottom: 40px">Top 5 search terms</h5>
+        <ol class="rounded-list">
+          {% for term in search_terms %}
+          <li><a>{{term.term}} </a></li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <div class="card">
+        <h5>Sentiment</h5>
+        <p>Overall percentages from all search results</p>
+        <div id="sentiment_pie" style="height: 380px"></div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="card">
+        <h5>Languages</h5>
+        <p>Number of advanced searches filtered in each language</p>
+        <div id="languages" style="height: 380px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %} {# Javascript concepts #}
+<script type="text/javascript">
+  // bubble chart code adapted from: https://bl.ocks.org/alokkshukla/3d6be4be0ef9f6977ec6718b2916d168
+    dataset =  {{concepts|safe}};
+        var diameter = 600;
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+        var bubble = d3.pack(dataset)
+            .size([400, 400])
+            .padding(1.5);
+
+          var heightValue = 400;
+          var widthValue = 400;
+
+        var svg = d3.select("#concepts")
+            .append("svg")
+            .attr("viewBox", `0 0 ${widthValue} ${heightValue}`)
+            .attr("class", "bubble");
+
+        var nodes = d3.hierarchy(dataset)
+            .sum(function(d) { return d.Count; });
+
+        var node = svg.selectAll(".node")
+            .data(bubble(nodes).descendants())
+            .enter()
+            .filter(function(d){
+                return  !d.children
+            })
+            .append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+
+        node.append("title")
+            .text(function(d) {
+                return d.Name + ": " + d.Count;
+            });
+
+        node.append("circle")
+            .attr("r", function(d) {
+                return d.r;
+            })
+            .style("fill", function(d,i) {
+                return color(i);
+            });
+
+        node.append("text")
+            .attr("dy", ".2em")
+            .style("text-anchor", "middle")
+            .text(function(d) {
+                return d.data.Name.substring(0, d.r / 2);
+            })
+            .attr("font-family", "Open Sans")
+            .attr("font-size", function(d){
+                return d.r/4;
+            })
+            .attr("fill", "black");
+
+        node.append("text")
+            .attr("dy", "1.5em")
+            .style("text-anchor", "middle")
+            .text(function(d) {
+                return d.data.Count;
+            })
+            .attr("font-family",  "Open Sans")
+            .attr("font-size", function(d){
+                return d.r/4;
+            })
+            .attr("fill", "black");
+
+        d3.select(self.frameElement)
+            .style("height", diameter + "px");
+</script>
+
+{# sentiment #}
+<script type="text/javascript">
+
+  var data = [{
+    values: {{sentiment|safe}},
+    labels: ['positive', 'neutral', 'negative'],
+    domain: {column: 0},
+  //   name: 'Overall Sentiment Percentage',
+    hoverinfo: 'label+percent',
+    hole: .5,
+    type: 'pie',
+      marker: {
+      colors: [
+      'rgb(0, 153, 51)',
+      'rgb(255, 255, 102)',
+      '#cc0000',
+      ]
+      },
+      }];
+
+  var layout = {
+    margin: {
+              l: 50,
+              r: 50,
+              b: 40,
+              t: 0,
+              pad: 0
+              },
+    showlegend: true,
+  };
+  var config = {responsive: true, displayModeBar: false}
+  Plotly.newPlot('sentiment_pie', data, layout, config);
+</script>
+
+{# map #}
+<script type="text/javascript">
+
+  var map = new L.Map('map', { attributionControl:false }).setView([0, 0], 1);
+      L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 18,
+      minZoom: 1,
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'pk.eyJ1IjoiYXJpYW5uYWJvdXJrZSIsImEiOiJja3IwZXhsZG8xcXllMnZvMWJpM2R3ZnY2In0.n_tdVGsbjeiUehIKYnbgFA'
+    }).addTo(map);
+
+  var regularIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+  var selectedIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+
+
+  var options = {keepSpiderfied:true};
+  var oms = new OverlappingMarkerSpiderfier(map, options);
+
+  var mapData = {{ longlat|safe }};
+  var bounds = new L.LatLngBounds();
+  for (var i = 0; i < window.mapData.length; i ++) {
+    var datum = window.mapData[i];
+    var loc = new L.LatLng(datum.lat, datum.long);
+    bounds.extend(loc);
+    var marker = new L.Marker(loc, {icon: regularIcon});
+    marker.desc =('<p>'+ datum.entity +'</p><p>Frequency: ' + datum.number + '</p>')
+    map.addLayer(marker);
+    oms.addMarker(marker);
+  }
+  map.fitBounds(bounds);
+
+  var popup = new L.Popup({closeButton: true, offset: new L.Point(0.5, -24)});
+  oms.addListener('click', function(marker) {
+    // marker.setIcon(selectedIcon);
+    popup.setContent(marker.desc);
+    popup.setLatLng(marker.getLatLng());
+    map.openPopup(popup);
+  });
+
+  oms.addListener('spiderfy', function(markers) {
+    for (var i = 0, len = markers.length; i < len; i ++) markers[i].setIcon(selectedIcon);
+    map.closePopup();
+  });
+  oms.addListener('unspiderfy', function(markers) {
+    for (var i = 0, len = markers.length; i < len; i ++) markers[i].setIcon(regularIcon);
+  });
+</script>
+
+<!-- Languages -->
+<script type="text/javascript">
+    var chart =
+  {
+  type: 'bar',
+  x: ['English', 'French', 'Spanish', 'German', 'Japanese', 'Korean'],
+  y: [ {{ language_count.0 }},
+      {{  language_count.1}},
+      {{  language_count.2 }},
+      {{  language_count.3 }},
+      {{  language_count.4 }},
+      {{  language_count.5 }} ],
+    marker:{
+    color: [' #ae1f6e', '#3b415e', '#74a6cc', '#68d4c7', '#cce77f', '#f67841'],
+           },
+  }
+
+  var data = [ chart ]
+  var layout = { margin: {
+          l: 80,
+          r: 50,
+          b: 50,
+          t: 0,
+          pad: 0
+        },
+      xaxis: {dtick: 1}
+          };
+  var config = {responsive: true, displayModeBar: false}
+  Plotly.newPlot('languages', data, layout, config);
+</script>
+
+{% endblock content %}

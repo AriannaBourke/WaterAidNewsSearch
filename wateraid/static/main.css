@@ -1,0 +1,313 @@
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700");
+@import url("https://fonts.googleapis.com/css?family=Slabo+27px");
+
+/* General */
+body {
+  font-family: "Open Sans", sans-serif;
+  font-size: 0.85em;
+}
+
+p {
+  font-size: 0.9em;
+}
+
+a {
+  font-size: 0.9em;
+  color: #00aeef;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #f60;
+}
+
+/* display lists inline */
+li {
+  display: inline;
+  font-size: 0.9em;
+}
+
+/* Buttons */
+
+.button2:hover {
+  background-color: #dbf5ff;
+}
+.button1:hover {
+  background-color: #e2ffe2;
+}
+.button3:hover {
+  background-color: #e2ffe2;
+}
+
+/* Blue outline buttons: in header */
+.button5 {
+  border: solid 2px #00aeef;
+  padding: 10px 13 10px 13;
+  border-radius: 12px;
+  margin-top: 18px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+/* Blue outline button (smaller padding): back button */
+.button2 {
+  border: solid 2px #00aeef;
+  padding: 5 7 5 7;
+  border-radius: 12px;
+  margin: 10px;
+  background-color: white;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.95em;
+}
+
+/* Buttons for filtering search results */
+.filter-buttons {
+  display: inline-block;
+  padding-right: 10px;
+}
+
+/* Green outline button: Save article */
+.button1 {
+  background-color: white;
+  margin: 10 10 10 10;
+  padding: 5 7 5 7;
+  border: 2px solid #04c946;
+  border-radius: 11px;
+  cursor: pointer;
+  font-size: 0.95em;
+}
+/* Red outline button: Unsave article */
+.button4 {
+  background-color: white;
+  margin: 10 10 10 10;
+  padding: 5 7 5 7;
+  border: 2px solid red;
+  border-radius: 11px;
+  cursor: pointer;
+  font-size: 0.95em;
+}
+
+/* Green outline button: Filter Buttons */
+.button3 {
+  background-color: white;
+  padding: 5 7 5 7;
+  border-radius: 11px;
+  border: 1px solid #04c946;
+  cursor: pointer;
+  font-size: 0.8em;
+  margin-bottom: 3px;
+  display: inline-block;
+}
+
+
+/* Site Header */
+
+.site-header {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.site-header::after {
+  content: "";
+}
+
+.site-identity img {
+  max-width: 200px;
+  float: left;
+  margin: 0 10px 0px 25;
+}
+
+.site-navigation {
+  float: right;
+}
+
+/* Site Footer */
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+
+main {
+  flex: 1;
+  margin-bottom: 20px;
+  /* background-color: #f2f2f2; */
+}
+
+footer {
+  border-top: 1px solid #ccc;
+  height: 50px;
+}
+
+/* Search Bars */
+
+.search {
+  display: flex;
+  max-width: 1000px;
+}
+
+#txt-search {
+  border-radius: 4 4px 4px 4;
+  border: solid 2px #00aeef;
+  font-size: 1em;
+}
+
+#btn-search {
+  padding: 8px 1px 7px;
+  left: -30px;
+  position: relative;
+  border: 0;
+  background: none;
+  z-index: 2;
+}
+
+#advanced {
+  border-radius: 4px;
+  border: solid 2px #00aeef;
+  font-size: 1em;
+  width: 85%;
+  padding: 5px;
+}
+
+#advanced-btn-search {
+  padding: 4px 1px 7px;
+  left: -35px;
+  position: relative;
+  /* border: solid 2px #00aeef; */
+  background: none;
+  z-index: 2;
+}
+
+/* Icon sizing */
+
+.fa-2x {
+  font-size: 1.25em !important;
+}
+
+/* map  */
+html,
+body {
+  height: 100%;
+}
+#mapid {
+  height: 270px;
+  width: 100%;
+}
+
+/* charts */
+
+.chart {
+  margin-left: 12%;
+}
+
+/* Accordian Cards */
+
+section {
+  width: 100%;
+}
+
+.card {
+  -moz-box-direction: normal;
+  -moz-box-orient: vertical;
+  background-color: #fff;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 5px;
+  border: 1px solid rgb(192, 191, 191);
+  max-width: 97%;
+  font-size: 1em;
+}
+
+.card-header {
+  background-color: #f2f4f4;
+  margin-bottom: 0;
+  padding: 7px 1.25rem;
+  border: none;
+}
+/* icon page*/
+.card-header a i {
+  float: left;
+  font-size: 20px;
+  padding: 5px 0;
+  margin: 0 25px 0 0px;
+  color: #195c9d;
+}
+/* icon downarrow */
+.card-header i {
+  float: right;
+  font-size: 20px;
+  width: 1%;
+  margin-top: 8px;
+  margin-right: 10px;
+}
+
+.card-header a {
+  width: 95%;
+  float: left;
+  color: #565656;
+}
+.card-header p {
+  margin: 0;
+  font-size: 1em;
+}
+
+.card-header h3 {
+  margin: 0 0 0px;
+  font-size: 1.35em;
+  font-family: "Slabo 27px", serif;
+  font-weight: bold;
+  color: #00aeef;
+}
+.card-block {
+  -moz-box-flex: 1;
+  flex: 1 1 auto;
+  padding: 20px;
+  color: #232323;
+  box-shadow: inset 0px 4px 5px rgba(0, 0, 0, 0.1);
+  border-top: 1px soild #000;
+  border-radius: 0;
+  font-size: 1em;
+}
+
+/* scroll bar: results page */
+
+.scroll {
+  max-height: 650px;
+  overflow-y: scroll;
+}
+
+/* Google Translate */
+
+div#google_translate_element div.goog-te-gadget-simple{
+  background-color:transparent;
+  border: solid 2px #00aeef;
+  padding: 10px 10 10px 10;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: "Open Sans", sans-serif;
+  font-size: 1.2em;
+  margin-right: 10px;
+  margin-top: 18px;
+}
+
+.goog-te-gadget-icon {
+  display: none !important;
+}
+div#google_translate_element div.goog-te-gadget-simple a.goog-te-menu-value span:hover{
+  text-decoration: none;
+}
+
+
+.dropdown-menu {
+  min-width:inherit;
+}
+
+

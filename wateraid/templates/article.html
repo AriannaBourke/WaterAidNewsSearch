@@ -1,0 +1,431 @@
+{% extends "layout.html" %} {% block content %}
+<!DOCTYPE html>
+<style>
+  .container {
+    max-width: 1550px;
+  }
+
+  form {
+    display: inline-block;
+  }
+
+  .card-header-color {
+    background-color: #effbff;
+  }
+
+  .card-header {
+    text-align-last: justify;
+  }
+
+  .card {
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 34, 51, 0.1);
+    box-shadow: 2px 4px 10px 0 rgba(0, 34, 51, 0.05),
+      2px 4px 10px 0 rgba(0, 34, 51, 0.05);
+    border-radius: 0.15rem;
+    margin-top: 10px;
+  }
+
+  h5 {
+    display: inline-block;
+    margin: 0;
+  }
+
+  .container {
+    flex-wrap: wrap;
+  }
+
+  .hide {
+    display: none;
+  }
+</style>
+
+<div class="container">
+  <div class="row">
+    <div class="col-6 border-right">
+      <div class="container">
+        <button
+          type="submit"
+          onclick="history.back(-1)"
+          class="btn btn-default button2"
+        >
+          <i class="fa fa-chevron-left fa-fw" aria-hidden="true"></i> Go Back
+        </button>
+        {% if button == 'save_button' %}
+        <form
+          name="save_form"
+          id="save_form"
+          method="POST"
+          action=""
+          style="display: inline"
+        >
+          <input
+            type="hidden"
+            name="save_form"
+            id="save_form"
+            style="display: inline"
+          />
+          <button
+            style="float: right"
+            id="save_form"
+            type="submit"
+            name="save"
+            class="btn btn-default button1"
+            onclick="saveFunction()"
+          >
+            <i class="fa fa-plus fa-fw" aria-hidden="true"></i>Save Article
+          </button>
+        </form>
+
+        <form
+          name="usave_form"
+          id="unsave_form"
+          method="POST"
+          action=""
+          style="display: inline"
+        >
+          <input
+            type="hidden"
+            name="unsave_form"
+            id="unsave_form"
+            style="display: inline"
+          />
+          <button
+            style="float: right"
+            id="unsave_form"
+            type="submit"
+            name="unsave"
+            class="btn btn-default button4 hide"
+            onclick="unsaveFunction()"
+          >
+            <i class="fa fa-times fa-fw" aria-hidden="true"></i>Unsave Article
+          </button>
+        </form>
+
+        {% else %} {% if button == 'unsave_button' %}
+        <form
+          name="save_form"
+          id="save_form"
+          method="POST"
+          action=""
+          style="display: inline"
+        >
+          <input
+            type="hidden"
+            name="save_form"
+            id="save_form"
+            style="display: inline"
+          />
+          <button
+            style="float: right"
+            id="save_form"
+            type="submit"
+            name="save"
+            class="btn btn-default button1 hide"
+            onclick="saveFunction()"
+          >
+            <i class="fa fa-plus fa-fw" aria-hidden="true"></i>Save Article
+          </button>
+        </form>
+
+        <form
+          name="usave_form"
+          id="unsave_form"
+          method="POST"
+          action=""
+          style="display: inline"
+        >
+          <input
+            type="hidden"
+            name="unsave_form"
+            id="unsave_form"
+            style="display: inline"
+          />
+          <button
+            style="float: right"
+            id="unsave_form"
+            type="submit"
+            name="unsave"
+            class="btn btn-default button4"
+            onclick="unsaveFunction()"
+          >
+            <i class="fa fa-times fa-fw" aria-hidden="true"></i>Unsave Article
+          </button>
+        </form>
+
+        {% endif %} {% endif %}
+
+        <!--Jquery Cdn -->
+        <script
+          src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous"
+        ></script>
+
+        <script type="text/javascript">
+          $(document).on("submit", "#save_form", function (e) {
+            e.preventDefault();
+            $.ajax({
+              type: "POST",
+              data: {
+                save_form: $("#save_form").val(),
+              },
+              success: function () {
+                // alert('saved');
+              },
+            });
+          });
+
+          $(document).on("submit", "#unsave_form", function (e) {
+            e.preventDefault();
+            $.ajax({
+              type: "POST",
+              data: {
+                unsave_form: $("#unsave_form").val(),
+              },
+              success: function () {
+                // alert('unsaved');
+              },
+            });
+          });
+        </script>
+
+        {% for result in search_results %}
+        <br />
+        <a style="text-align: justify" href="{{ result.url }}" class="icon-link"
+          ><h5><b>{{ result.title }}</b></h5>
+        </a>
+        <br />
+        <br />
+        <p>
+          {{ format_date }}
+          <a
+            style="text-align: justify"
+            href="//{{ result.host }}"
+            class="icon-link"
+            >{{ result.host }}
+          </a>
+        </p>
+        <p style="text-align: justify">{{ result.text }}...</p>
+
+        <div class="row">
+          <div class="col-6">
+            <div class="card" style="width: 23rem; margin-bottom: 5%">
+              <div
+                class="card-header card-header-color"
+                style="text-align: left"
+              >
+                <b><i class="fa fa-key" aria-hidden="true"></i> Keywords</b>
+              </div>
+              {%- for item in result.enriched_text.keywords[0:5] -%}
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">{{item.text}}</li>
+              </ul>
+              {%- endfor -%}
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="card" style="width: 23rem; margin-bottom: 5%">
+              <div
+                class="card-header card-header-color"
+                style="text-align: left"
+              >
+                <i class="fa fa-lightbulb-o fa-fw" aria-hidden="true"></i
+                ><b>Concepts</b>
+              </div>
+              {%- for item in result.enriched_text.concepts[0:5] -%}
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">{{item.text}}</li>
+              </ul>
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <div class="card" style="width: 23rem; margin-bottom: 3%">
+              <div
+                class="card-header card-header-color"
+                style="text-align: center"
+              >
+                <i class="fa fa-globe fa-fw" aria-hidden="true"></i
+                ><b> Entities</b>
+              </div>
+              {%- for item in result.enriched_text.entities[0:5] -%}
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">{{item.text}}</li>
+              </ul>
+              {%- endfor -%}
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="card" style="width: 23rem; margin-bottom: 3%">
+              <div
+                class="card-header card-header-color"
+                style="text-align: center"
+              >
+                <i class="fa fa-files-o fa-fw" aria-hidden="true"></i
+                ><b> Categories</b>
+              </div>
+              {%- for item in result.enriched_text.categories -%}
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">{{item.label}}</li>
+              </ul>
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <div class="container">
+        {% if result.enriched_text.sentiment.document.score < 0 %}
+        <br />
+        <div class="card">
+          <div id="Dial_negative" style="height: 300px"></div>
+          <p style="text-align: center">
+            The closer the score is to -1, the more negative the article
+          </p>
+        </div>
+        <script type="text/javascript">
+          // Guage plot code adapted from: https://codepen.io/amandasantosf/pen/qBaNbGK
+            var data_neg = [
+            {
+              domain: { x: [0, 1], y: [0, 1] },
+              value: {{result.enriched_text.sentiment.document.score|safe}},
+              number: { font: { size: 40 }},
+              type: "indicator",
+              mode: "gauge+number",
+              delta: { increasing: { color: "white" } },
+              gauge: { axis: { range: [0, -1] },
+                    visible: true,
+                    tickwidth: 1,
+                    tickcolor: "rgb(178, 178, 178)",
+                    tickvals: [0, -1],
+                    tickmode: 'array',
+                    tickfont: {
+                      size: '100px' },
+
+                    'bar': {'color': "red",
+                    thickness: 1 },
+                    bgcolor: "white",
+                    bordercolor: "grey",
+                  }
+            }
+            ];
+
+            var layout_neg = { margin: {
+                      l: 60,
+                      r: 60,
+                      b: 0,
+                      t: 0,
+                      pad: 0
+                    },
+                    title: { text: "Negative Sentiment" ,
+                    font: { size: 16 },
+                    yanchor: "bottom",
+                    y: 0.1,
+                     }, };
+            var config = {responsive: true, displayModeBar: false}
+            Plotly.newPlot('Dial_negative', data_neg, layout_neg, config);
+        </script>
+        {% else %}
+        <br />
+        <div class="card">
+          <div id="Dial_positive" style="height: 300px"></div>
+          <p style="text-align: center">
+            The closer the score is to 1, the more positive the article
+          </p>
+        </div>
+        <script type="text/javascript">
+          // Guage plot code adapted from: https://codepen.io/amandasantosf/pen/qBaNbGK
+            var data_pos = [
+           {
+             domain: { x: [0, 1], y: [0, 1] },
+             value: {{result.enriched_text.sentiment.document.score|safe}},
+             number: { font: { size: 40 }},
+             type: "indicator",
+             mode: "gauge+number",
+             delta: { increasing: { color: "white" } },
+             gauge: { axis: { range: [0, 1] },
+                   visible: true,
+                   tickwidth: 1,
+                   tickcolor: "rgb(178, 178, 178)",
+                   tickvals: [0, -1],
+                   tickmode: 'array',
+                   tickfont: {
+                     size: '100px' },
+
+                   'bar': {'color': "green",
+                   thickness: 1 },
+                   bgcolor: "white",
+                   bordercolor: "grey",
+                 }
+           }
+           ];
+
+           var layout_pos = {margin: {
+                     l: 60,
+                     r: 60,
+                     b: 0,
+                     t: 0,
+                     pad: 0
+                   },
+           title: { text: "Positive Sentiment" ,
+                   font: { size: 16 },
+                   yanchor: "bottom",
+                   y: 0.1 },
+                     };
+
+           var config = {responsive: true, displayModeBar: false}
+           Plotly.newPlot('Dial_positive', data_pos, layout_pos, config);
+        </script>
+        {% endif %} {% if nlu_results %}
+        <div class="card">
+          <div id="emotions" style="height: 400px"></div>
+          <p style="text-align: center">
+            The closer the score is to 1, the more likely the article is to
+            convey the emotion
+          </p>
+        </div>
+        {% endif %}
+        <script type="text/javascript">
+            var chart_data = {
+            type: 'bar',
+            x: ['Sadness', 'Fear', 'Disgust', 'Anger'],
+            y: [ {{ nlu_results.sadness }},
+                {{ nlu_results.fear }},
+                 {{ nlu_results.disgust }},
+                {{ nlu_results.anger }}],
+            marker: {
+                color: [' #003f5c', '#bc5090', '#ff6361', '#ffa600'] ,
+            },
+          };
+          var data = [ chart_data ];
+          var layout = {
+            title: 'Emotions',
+            font: {size: 13},
+            margin: {
+                              l: 80,
+                              r: 80,
+                              b: 40,
+                              t: 80,
+                              pad: 10
+                            },
+                      };
+          var config = {responsive: true, displayModeBar: false}
+          Plotly.newPlot('emotions', data, layout, config );
+        </script>
+
+        <br />
+
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

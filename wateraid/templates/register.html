@@ -1,0 +1,70 @@
+{% extends "layout.html" %} {% block content %}
+<!DOCTYPE html>
+<style>
+  .container {
+    max-width: 500px;
+  }
+</style>
+<div class="content-section">
+  <div class="container">
+    <br />
+    <div class="card" style="padding: 20px">
+      <form method="POST" action="">
+        {{ form_register.hidden_tag() }}
+        <fieldset class="form-group">
+          <h5 style="text-align: center">Register For A New Account</h5>
+          <br />
+          <div class="form-group">
+            {{ form_register.email.label(class="form-control-label") }} {% if
+            form_register.email.errors %} {{
+            form_register.email(class="form-control form-control-lg is-invalid")
+            }}
+            <div class="invalid-feedback">
+              {% for error in form_register.email.errors %}
+              <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% else %} {{ form_register.email(class="form-control
+            form-control-lg") }} {% endif %}
+          </div>
+          <div class="form-group">
+            {{ form_register.password.label(class="form-control-label") }} {% if
+            form_register.password.errors %} {{
+            form_register.password(class="form-control form-control-lg
+            is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form_register.password.errors %}
+              <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% else %} {{ form_register.password(class="form-control
+            form-control-lg") }} {% endif %}
+          </div>
+          <div class="form-group">
+            {{ form_register.confirm_password.label(class="form-control-label")
+            }} {% if form_register.confirm_password.errors %} {{
+            form_register.confirm_password(class="form-control form-control-lg
+            is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form_register.confirm_password.errors %}
+              <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% else %} {{ form_register.confirm_password(class="form-control
+            form-control-lg") }} {% endif %}
+          </div>
+        </fieldset>
+        <div class="form-group">
+          {{ form_register.submit(class="btn btn-default button5") }}
+        </div>
+      </form>
+    </div>
+    <div class="container">
+      <p class="text-muted">
+        Already Have An Account?
+        <a class="ml-2" href="{{ url_for('users_blueprint.login') }}">Log In</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock content %}

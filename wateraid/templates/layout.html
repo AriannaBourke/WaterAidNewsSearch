@@ -1,0 +1,111 @@
+<html lang='en'>
+  <!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <script src="{{ url_for('static', filename='js/language.js') }}"></script>
+    <script src="{{ url_for('static', filename='/js/search_box.js') }}"></script>
+    <script src="{{ url_for('static', filename='/js/filterfunctions.js') }}"></script>
+    <script src="{{ url_for('static', filename='/js/save_article.js') }}"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+   <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier-Leaflet/0.2.6/oms.min.js"></script>
+   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> 
+   
+    {% if title %}
+    <title>WaterAid - {{ title }}</title>
+    {% else %}
+    <title>WaterAid</title>
+    {% endif %}
+  </head>​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
+<body >
+ 
+    <header class="site-header">
+        <div class="site-identity">
+            <a href="{{ url_for('main_blueprint.home') }}">
+              <img src="/static/images/wateraid_logo.png">
+            </a> 
+          </div>  
+          <nav class="site-navigation navbar navbar-dark navbar-expand-md">
+          <div class="container">
+            <div id="google_translate_element"></div>
+                <div class="dropdown">
+                  {% if current_user.is_authenticated %}
+                  <button type="button"  class="btn dropdown-toggle button5" style='margin-right:10px;font-size:0.9em;' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-user fa-2x fa-fw" style="color:#00AEEF;"></i> Account
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="nav-item nav-link" href="{{ url_for('account_blueprint.account') }}" style='font-size:0.85em'>Saved Articles</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="nav-item nav-link" href="{{ url_for('users_blueprint.logout') }}" style='font-size:0.85em'>Log Out</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button type="button"  class="btn dropdown-toggle button5" style='margin-right:10px;font-size:0.9em;' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fa fa-list fa-2x fa-fw" style="color:#00AEEF;"></i> More
+                    </button>
+                    <div class="dropdown-menu">
+                      <a class="nav-item nav-link" href="{{ url_for('main_blueprint.home') }}" style='font-size:0.85em'>Home</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="nav-item nav-link" href="{{ url_for('main_blueprint.help') }}" style='font-size:0.85em'>Help</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="nav-item nav-link" href="{{ url_for('search_blueprint.search_results') }}" style='font-size:0.85em'>Search</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="nav-item nav-link" href="{{ url_for('trends_blueprint.trends') }}" style='font-size:0.85em'>Trends</a>
+                    <div>
+                    </div>
+                  {% else %}
+                  <button type="button" class="btn dropdown-toggle button5" style='margin-right:10px;font-size:0.9em;' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-user fa-2x fa-fw" style="color:#00AEEF;"></i> Register or Log In
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="nav-item nav-link" href="{{ url_for('users_blueprint.login') }}" style='font-size:0.85em'>Log In</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="nav-item nav-link" href="{{ url_for('users_blueprint.register') }}" style='font-size:0.85em'>Register</a>
+                    </div>
+                    <button type="button" class="btn btn-default button5" onclick="window.location.href='{{ url_for('main_blueprint.help') }}';"> 
+                      <i class="fa fa-info-circle fa-2x fa-fw" style="color:#00AEEF;" aria-hidden="true"></i> Help</button> 
+                  {% endif %}
+                  </div>
+                </div>
+         
+          </div>
+          </div> 
+        </nav>
+      </header>
+
+      <main>
+      <!-- flash alerts -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+ 
+    {% block content %} {% endblock %}
+      </main>
+
+ <footer class="footer">
+    <p style="text-align:right; margin-right:20px; margin-top:15px;">&copy; WaterAid 2021</p>
+</footer>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+                integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+                crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>  

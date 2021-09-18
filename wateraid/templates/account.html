@@ -1,0 +1,100 @@
+{% extends "layout.html" %} {% block content %}
+<!DOCTYPE html>
+<style>
+  .container {
+    max-width: 800px;
+  }
+
+  .card {
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 34, 51, 0.1);
+    box-shadow: 2px 4px 10px 0 rgba(0, 34, 51, 0.05),
+      2px 4px 10px 0 rgba(0, 34, 51, 0.05);
+    border-radius: 0.15rem;
+    margin-top: 10px;
+    padding: 10px;
+    margin-bottom: 5px;
+  }
+
+  .pagination a {
+    border-radius: 5px;
+  }
+
+  .pagination a.active {
+    border-radius: 5px;
+  }
+  .center {
+    text-align: center;
+  }
+</style>
+<br />
+<div class="container">
+  <form role="search" method="POST" action="">
+    <br />
+    <div class="search">
+      <input
+        name="search"
+        type="text"
+        id="txt-search"
+        class="form-control"
+        placeholder="Search through saved articles by title or keywords"
+      />
+      <span class="input-group-btn">
+        <button id="btn-search" type="submit" class="btn btn-default">
+          <i class="fa fa-search fa-2x"></i>
+        </button>
+      </span>
+    </div>
+  </form>
+  {% if search_results %} {% for result in search_results %}
+  <div class="card">
+    <h6>
+      <i
+        class="fa fa-file-text-o fa-2x fa-fw"
+        aria-hidden="true"
+        style="color: #195c9d"
+      ></i>
+      <a
+        style="text-align: justify"
+        href="{{ result.results[0].results[0].url }}"
+        class="icon-link"
+        ><b>{{result.results[0].results[0].title}}</b>
+      </a>
+    </h6>
+    <p>
+      {{ result.results[0].results[0].publication_date }} {{
+      result.results[0].results[0].host }}
+    </p>
+    <div>
+      <form role="form" method="POST" action="">
+        <input
+          type="hidden"
+          value="{{result.results[0].results[0].id}}"
+          name="delete"
+        />
+        <button
+          style="float: right"
+          type="submit"
+          class="btn btn-default button4"
+          name="delete"
+        >
+          <i class="fa fa-times fa-fw" aria-hidden="true"></i>Unsave Article
+        </button>
+      </form>
+      <a
+        href="{{ url_for('article_blueprint.article', page_id=result.results[0].results[0].id ) }}"
+        class="icon-link"
+        >See more details</a
+      >
+    </div>
+  </div>
+  {% endfor %} {% else %}
+
+  <p>There are no articles to display!</p>
+  {% endif %}
+  <div class="center">{{ pagination.links }}</div>
+
+  <br />
+</div>
+
+{% endblock content %}

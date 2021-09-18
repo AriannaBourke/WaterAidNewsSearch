@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+{% block content %}
+<!DOCTYPE html>
+<style>
+    .container {
+        max-width: 700px;
+    } 
+
+    .images img {
+      max-width: 400px;
+    }
+
+    b {
+      color: #f60;
+    }
+
+
+</style>
+<div class='container'>
+    <br>
+<h3 style="text-align:center">How To Use The Search Portal</h3>
+<br>
+
+<div id="accordion">
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <div class="mb-0">
+         <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+            <i class="fa fa-info-circle fa-2x fa-fw" style="color:#00AEEF;" aria-hidden="true"></i><h3>How to register and log in</h3>
+        </a>
+        <i class="fa fa-angle-down fa-2x" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+          <div class='images'>
+          <img src="/static/images/register.png">
+            <p>Click <b>'Register'</b> on the home page or <b>'Register Here'</b> in drop-down on the top right of the page. </p>
+            <img src="/static/images/register2.png">
+            <p>Fill out the short registration form and click the <b>'Register'</b> button</p>
+            <p>You have now registered! The page will automatically redirect for you to log in to start using the search portal!</p>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="card">
+    <div class="card-header" id="headingTwo">
+        <div class="mb-0">
+         <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" class="collapsed">
+            <i class="fa fa-info-circle fa-2x fa-fw" style="color:#00AEEF;" aria-hidden="true"></i><h3>How to search for articles</h3>
+        </a>
+        <i class="fa fa-angle-down fa-2x" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+        <div class="card-body">
+          <div class='images'>
+          <img src="/static/images/search.png">
+            <p>Fill in the search bar with any word or term you like, for example 'Water, sanitation and hygiene'</p>
+            <p>The more specific the search terms entered the more targeted the results will be!</p>
+            <img src="/static/images/results.png" style='max-width:600px'>
+            <p>This will send a natural language query to Watson Discovery News and display the results on the search results page</p>
+            <p>Search results are displayed in descending order of relevance</p>
+            <p>Click the title of the article to see a preview</p>
+            <p>Click <b>'see more details'</b> to view the top keywords, concepts, entities and categories. Also shown are the article sentiment and emotions.</p>
+            <p>In this page you can also click the article title to be taken to the full article page</p>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header" id="headingThree">
+            <div class="mb-0">
+             <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" class="collapsed">
+                <i class="fa fa-info-circle fa-2x fa-fw" style="color:#00AEEF;" aria-hidden="true"></i><h3>How to perform an advanced search with filtering</h3>
+            </a>
+            <i class="fa fa-angle-down fa-2x" aria-hidden="true"></i>
+            </div>
+          </div>
+    
+          <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+            <div class="card-body">
+              <div class='images'>
+              <img src="/static/images/advanced.png">
+                <p>Performing an advanced search is the best way to refine your results!</p>
+                <p>Click <b>'Advanced Search'</b> on the right-hand side of the search results page</p>
+                <p>This presents option to filter by source, concepts, location etc.</p>
+                <p>Step 1: Enter any word or term you like, for example 'water shortage' into the search bar and click to add it to the filter panel</p>
+                <p>Step 2: If you wish to exclude WaterAid from the search, click the <b>'No WaterAid'</b> button to add it to the filter panel. This will exclude all articles with WaterAid included in the title, keywords, concepts and entities</p>
+                <p>Step 3: Choose any combination of filters from the tabs</p>
+                <p>Click <b>'Submit'</b> to perform the search</p>
+                <img src="/static/images/location.png"> 
+                <p>You can also use the map! This presents all the location entities which have been found in the search results</p>
+                <p>Click on one of the pins and choose filter by location to refine your results</p>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="headingFour">
+                <div class="mb-0">
+                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" class="collapsed">
+                    <i class="fa fa-info-circle fa-2x fa-fw" style="color:#00AEEF;" aria-hidden="true"></i><h3>How to save an article</h3>
+                </a>
+                <i class="fa fa-angle-down fa-2x" aria-hidden="true"></i>
+                </div>
+              </div>
+        
+              <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                <div class="card-body">
+                  <div class='images'>
+                    <p>Click <b>'see more details'</b> on the article of your choice</p>
+                    <img src="/static/images/save.png"> 
+                    <p>Then click the green <b>'Save Article'</b> button</p>
+                    <p>To view all of your saved articles, click on the <b>'Account'</b> drop-down at the top right-hand corner of the page</p>
+                    <p>Click <b>'Saved Articles'</b></p>
+                    <p>This will show a list of all of your previously saved atticles</p>
+                    <p>You can search through the list using the search bar, where you can either type in the title of the article or keywords</p>
+                    <p>If you wish to delete the article from your list, click <b>'Unsave Article'</b></p>
+                </div>
+              </div>
+              </div>
+            </div>
+    </div>
+    </div>
+
+
+
+</div>
+</div>
+
+{% endblock content %}

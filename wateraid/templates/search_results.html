@@ -1,0 +1,437 @@
+{% extends "layout.html" %} {% block content %}
+<!DOCTYPE html>
+<style>
+  .container {
+    max-width: 1550px;
+  }
+
+  .card {
+    background-color: #ffffff;
+    border: 1px solid rgb(202, 202, 202);
+    box-shadow: 2px 4px 10px 0 rgba(0, 34, 51, 0.05),
+      2px 4px 10px 0 rgba(0, 34, 51, 0.05);
+    border-radius: 0.15rem;
+    margin-top: 10px;
+  }
+
+
+</style>
+<script type="text/javascript">
+window.addEventListener('keydown',function(e){if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){if(e.target.nodeName=='INPUT'&&e.target.type=='text'&&e.target.id=='advanced'){e.preventDefault();return false;}}},true);
+</script>
+
+
+<div class="container">
+  <div class="row">
+    <!-- left side -->
+    <div class="col-6 border-right scroll">
+      <form role="search" method="POST" action="">
+        <br />
+        <div class="search">
+          <input
+            name="new_search"
+            type="text"
+            id="txt-search"
+            class="form-control"
+            placeholder="{{search}}"
+            onkeyup="enable_search()"
+          />
+          <span class="input-group-btn">
+            <button id="btn-search" type="submit" class="btn btn-default" disabled>
+              <i class="fa fa-search fa-2x"></i>
+            </button>
+          </span>
+        </div>
+      </form>
+
+      {% if search_results %} {% if count == 1 %}
+      {% if filter %}
+      <p style='margin-left: 10px;'>Search Parameters: {{search}}, {{filter}}</p>
+      {% endif %}
+      <p style='margin-left: 10px;'>Showing {{count}} result</p>
+      {% else %}
+      {% if filter %}
+      <p style='margin-left: 10px;'>Search Parameters: {{search}}, {{filter}}</p>
+      {% endif %}
+      <p style='margin-left: 10px;'>Showing {{count}} results</p>
+      {% endif %} {% endif %}
+
+
+
+      {% if search_results %} {% for result in search_results[0] %}
+      <div id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="card">
+          <div class="card-header" role="tab" id="headingOne">
+            <div class="mb-0">
+              <a
+                data-toggle="collapse"
+                data-parent="#accordion"
+                href="#collapse-{{loop.index}}"
+                aria-expanded="false"
+                aria-controls="collapse-{{loop.index}}"
+                class="collapsed"
+              >
+                <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                <h3>{{ result.title}}</h3>
+               
+                <p>{{ result.publication_date }} {{ result.host }}</p>
+               
+              </a>
+              <i class="fa fa-angle-down fa-2x" aria-hidden="true"></i>
+            </div>
+          </div>
+
+          <div
+            id="collapse-{{loop.index}}"
+            class="collapse"
+            role="tabpanel"
+            aria-labelledby="headingOne"
+            aria-expanded="false"
+          >
+            <div class="card-block">
+              <p style="text-align: justify">{{ result.text }}...</p>
+              <i class="fa fa-line-chart" aria-hidden="true"></i>
+              <b>Relevance Score:</b>
+              <li style="font-size: 0.85em">
+                {{'%0.1f'| format(result.score|float)}}
+              </li>
+              <p></p>
+              <i class="fa fa-lightbulb-o" aria-hidden="true"></i
+              ><b> Top Concepts:</b>
+              {% set comma = joiner(",") %} {%- for item in
+              result.enriched_text.concepts[0:3] -%}{{comma()}}
+              <li style="font-size: 0.85em">{{item.text}}</li>
+              {%- endfor -%}
+              <p></p>
+              <a
+                href="{{ url_for('article_blueprint.article', page_id=result.id ) }}"
+                class="icon-link"
+                >See more details</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %} {% else %}
+      <p>
+        There are no results to show, please begin your search using the search
+        bar!
+      </p>
+      {% endif %}
+    </div>
+
+    <!-- right side -->
+
+    <div class="col-6">
+      <button
+        type="button"
+        class="btn btn-default button5"
+        onclick="window.location.href='{{ url_for('trends_blueprint.trends') }}';"
+      >
+        <i
+          class="fa fa-bar-chart fa-2x fa-fw"
+          style="color: #00aeef"
+          aria-hidden="true"
+        ></i>
+        View Trends From Search Results
+      </button>
+
+      <div id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="card">
+          <div class="card-header" role="tab" id="headingOne">
+            <div class="mb-0">
+              <a
+                data-toggle="collapse"
+                data-parent="#accordion"
+                href="#collapseOne"
+                aria-expanded="false"
+                aria-controls="collapseOne"
+                class="collapsed"
+              >
+                <i class="fa fa-filter" aria-hidden="true"></i>
+                <h3>Advanced Search</h3>
+                <p>
+                  Perform a refined search with filtering
+                </p>
+              </a>
+              <i class="fa fa-angle-down fa-2x" aria-hidden="true"></i>
+            </div>
+          </div>
+
+          <div
+            id="collapseOne"
+            class="collapse"
+            aria-labelledby="headingOne"
+            data-parent="#accordion"
+          >
+            <div class="card-body">
+            <p><b style='color: #195c9d;'>Step 1:</b> Type a search term into the search bar and click add</p>
+            <form>
+              <input type="text" id="advanced" onkeyup="enable()" name="advanced" placeholder='Search'/>
+              <button id="advanced-btn-search" type="button" class="btn btn-default" 
+                      onclick="addSearchElement(document.getElementById('advanced').value)" disabled ><i class="fa fa-plus fa-2x fa-fw"></i></button>
+            </form>
+
+            <p><b style='color: #195c9d;'>Step 2:</b>Would you like your search to exclude reference to WaterAid? <button style='margin-left:5px' id='buttonNo WaterAid' class="btn btn-default button3" type="button" name="wateraid_term" onclick="addWaterAidElement('No WaterAid')">
+                No WaterAid
+              </button></p>
+            <p><b style='color: #195c9d;'>Step 3:</b> To filter the search, add any combination of fields found within the tabs below</p>
+            <div class='card' style='max-width:100%;'>
+              <ul class="nav nav-tabs">
+                {# <li class="nav-item">
+                  <a data-toggle="tab" href="#Keywords" class="nav-link"
+                    >Keywords</a
+                  >
+                </li> #}
+                <li class="nav-item">
+                  <a data-toggle="tab" href="#Concepts" class="nav-link"
+                    >Concepts</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a data-toggle="tab" href="#Entities" class="nav-link"
+                    >Entities</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a data-toggle="tab" href="#Locations" class="nav-link">Location</a>
+                </li>
+                <li class="nav-item">
+                  <a data-toggle="tab" href="#Sentiment" class="nav-link"
+                    >Sentiment</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a data-toggle="tab" href="#Source" class="nav-link"
+                    >Source</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a data-toggle="tab" href="#Date" class="nav-link">Date</a>
+                </li>
+              <li class="nav-item">
+                <a data-toggle="tab" href="#Language" class="nav-link">Language</a>
+              </li>
+            </ul>
+
+              <div class="tab-content">
+                <div id="Concepts" class="tab-pane fade">
+                  <div class='container' style='padding-bottom: 20px;'>
+                    <br />
+                    <small style='color: #195c9d;'><b>Choose 1 or multiple of the following concepts</b></small>
+                    <br />
+                  <br />
+                  <p><b>Popular Concepts</b></p>
+                  {% for concept in popular_terms %}
+                    <button id='button{{concept}}' class="btn btn-default button3" type="button" name="concept_term" onclick="addConceptElement('{{concept}}')">
+                      {{concept}}
+                    </button>
+                {% endfor %}
+                <br />
+                <br />
+                  <p><b>Concepts In Existing Search Results</b></p>
+                  {% for con in concepts %} 
+                  <button id='button{{con}}' class="btn btn-default button3" type="button" name="concept_term" onclick="addConceptElement('{{con}}')">
+                      {{con}}
+                    </button>
+                  {% endfor %} 
+                </div>
+              </div>
+
+                <div id="Entities" class="tab-pane fade">
+                  <div class='container' style='padding-bottom: 20px;'>
+                    <br />
+                    <small style='color: #195c9d;'><b>Choose 1 or multiple of the following entities</b></small>
+                    <br />
+                  <br />
+                  <p><b>Entities In Existing Search Results</b></p>
+                  <p><b>Organizations & Companies</b></p>
+                  {% for org in entities_org %} 
+                    <button id='button{{org}}' class="btn btn-default button3" type="button" name="entity_term" onclick="addEntityElement('{{org}}')">
+                      {{org}}
+                    </button>
+                  {%- endfor -%}
+                   <br />
+                   <br />
+                  <p><b>People</b></p>
+                  {% for ppl in entities_ppl %} 
+                    <button id='button{{ppl}}' class="btn btn-default button3" type="button" name="entity_term" onclick="addEntityElement('{{ppl}}')">
+                      {{ppl}}
+                    </button>
+                  </form>
+                  {%- endfor -%} 
+                </div>
+                </div>
+
+                <div id="Sentiment" class="tab-pane fade">
+                  <div class='container' style='padding-bottom: 20px;'>
+                    <br />
+                    <small style='color: #195c9d;'><b>Choose positive or negative sentiment</b></small>
+                    <br />
+                  <br />
+                  {% for sent in sentiments %}
+                    <button id='button{{sent}}' class="btn btn-default button3" type="button" name="sentiment_term" onclick="addSentimentElement('{{sent}}')">
+                      {{sent}}
+                    </button>
+                {% endfor %}
+                </div>
+                </div>
+
+                <div id="Source" class="tab-pane fade">
+                  <div class='container' style='padding-bottom: 20px;'>
+                    <br />
+                    <small style='color: #195c9d;'><b>Choose 1 or multiple of the following sources</b></small>
+                    <br />
+                  <br />
+                  {% for source in sources %}
+                    <button id='button{{source.source}}' class="btn btn-default button3" type="button" name="source_term" onclick="addSourceElement('{{source.source}}')">
+                      {{source.source}}
+                    </button>
+                {% endfor %}
+                </div>
+                </div>
+
+                <div id="Date" class="tab-pane fade">
+                  <div class='container' style='padding-bottom: 20px;'>
+                    <br />
+                    <small style='color: #195c9d;'><b>Choose 1 of the following date ranges</b></small>
+                    <br />
+                  <br />
+                  {% for date in dates %}
+                    <button id='button{{date.Date}}' class="btn btn-default button3" type="button" name="date_term" onclick="addDateElement('{{date.Date}}')">
+                      {{date.Date}}
+                    </button>
+                {% endfor %}
+                </div>
+                </div>
+
+                <div id="Locations" class="tab-pane fade">
+                  <div class='container' style='padding-bottom: 20px;'>
+                    <br />
+                    <small style='color: #195c9d;'><b>Choose 1 or multiple of the following locations</b></small>
+                    <br />
+                  <br />
+                {% for loc in locations %}
+                    <button id='button{{loc}}' class="btn btn-default button3" type="button" name="location_term" onclick="addLocElement('{{loc}}')">
+                      {{loc}}
+                    </button>
+                {% endfor %}
+                </div>
+                </div>
+
+                <div id="Language" class="tab-pane fade">
+                  <div class='container' style='padding-bottom: 20px;'>
+                    <br />
+                    <small style='color: #195c9d;'><b>Change the news collection language by selecting 1 of the following</b></small>
+                    <br />
+                  <br />
+                {% for lang in languages %}
+                    <button id='button{{lang.Language}}' class="btn btn-default button3" type="button" name="language_term" onclick="addLangElement('{{lang.Language}}')">
+                      {{lang.Language}}
+                    </button>
+                {% endfor %}
+                </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+            <!-- filter panel -->
+            <div class='container' style='width: 90%; border-top: 1px solid rgb(192, 191, 191); padding:10px'>
+            <p><b>Filter Panel</b></p>
+            <form method="POST" id="filter_form" action="" name="filter_form">
+            <input type="hidden" name="filter_form" >
+                <button class='btn btn-default button1' style='float: right' type="submit" >Submit</button>
+            </form>
+            </div>
+            
+
+         </div>
+        </div>
+
+
+        <div class="card" style="margin-top: 2%">
+          <h5 style="text-align: center; margin-top: 1%; color: #195c9d">
+            Map view of search results
+          </h5>
+
+          <div style="margin-bottom: 4%; margin-top: 2%" id="mapid"></div>
+
+          <script type="text/javascript">
+
+            var map = new L.Map('mapid', { attributionControl:false }).setView([0, 0], 1);
+                L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                minZoom: 1,
+                id: 'mapbox/streets-v11',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: 'pk.eyJ1IjoiYXJpYW5uYWJvdXJrZSIsImEiOiJja3IwZXhsZG8xcXllMnZvMWJpM2R3ZnY2In0.n_tdVGsbjeiUehIKYnbgFA'
+              }).addTo(map);
+
+            // Coloured icons code adapted from: https://github.com/pointhi/leaflet-color-markers/blob/master/README.md
+            var regularIcon = new L.Icon({
+                  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                  iconSize: [25, 41],
+                  iconAnchor: [12, 41],
+                  popupAnchor: [1, -34],
+                  shadowSize: [30, 30]
+                });
+            var selectedIcon = new L.Icon({
+                  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                  iconSize: [25, 41],
+                  iconAnchor: [12, 41],
+                  popupAnchor: [1, -34],
+                  shadowSize: [41, 41]
+                });
+
+            // Spiderfier code adapted from: https://github.com/jawj/OverlappingMarkerSpiderfier-Leaflet
+            var options = {keepSpiderfied:true};
+            var oms = new OverlappingMarkerSpiderfier(map, options);
+
+            var mapData = {{ longlat|safe }};
+            var bounds = new L.LatLngBounds();
+            for (var i = 0; i < window.mapData.length; i ++) {
+              var datum = window.mapData[i];
+              var loc = new L.LatLng(datum.lat, datum.long);
+              bounds.extend(loc);
+              var marker = new L.Marker(loc, {icon: regularIcon});
+              marker.desc =('<a href={{ url_for("article_blueprint.article", page_id='' ) }}' + datum.id + '>'+ datum.title +'</a><p>Location:\
+                    ' + datum.entity + '</p><form role="form" method="POST" action="">\
+                    <input type="hidden" value="'+ datum.entity +'"name="map_term"/>\
+                    <button class="btn btn-default button3" type="submit" name="map_term">Filter by location</button></form>')
+              map.addLayer(marker);
+              oms.addMarker(marker);
+            }
+            map.fitBounds(bounds);
+
+            var popup = new L.Popup({closeButton: true, offset: new L.Point(0.5, -24)});
+            oms.addListener('click', function(marker) {
+              popup.setContent(marker.desc);
+              popup.setLatLng(marker.getLatLng());
+              map.openPopup(popup);
+            });
+
+            oms.addListener('spiderfy', function(markers) {
+              for (var i = 0, len = markers.length; i < len; i ++) markers[i].setIcon(selectedIcon);
+              map.closePopup();
+            });
+            oms.addListener('unspiderfy', function(markers) {
+              for (var i = 0, len = markers.length; i < len; i ++) markers[i].setIcon(regularIcon);
+            });
+          </script>
+        </div>
+
+        <!-- final div of right side -->
+      </div>
+
+      <!-- end page divs -->
+    </div>
+  </div>
+
+  {% endblock content %}
+</div>

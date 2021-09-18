@@ -1,0 +1,68 @@
+{% extends "layout.html" %} {% block content %}
+<!DOCTYPE html>
+<style>
+  .container {
+    max-width: 500px;
+  }
+</style>
+
+<div class="content-section">
+  <div class="container">
+    <br />
+    <div class="card" style="padding: 20px">
+      <form method="POST" action="">
+        {{ form_login.hidden_tag() }}
+        <fieldset class="form-group">
+          <h5 style="text-align: center">Log In To Your Account</h5>
+          <br />
+          <div class="form-group">
+            {{ form_login.email.label(class="form-control-label") }} {% if
+            form_login.email.errors %} {{ form_login.email(class="form-control
+            form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.email.errors %}
+              <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% else %} {{ form_login.email(class="form-control form-control-lg")
+            }} {% endif %}
+          </div>
+          <div class="form-group">
+            {{ form_login.password.label(class="form-control-label") }} {% if
+            form_login.password.errors %} {{
+            form_login.password(class="form-control form-control-lg is-invalid")
+            }}
+            <div class="invalid-feedback">
+              {% for error in form_login.password.errors %}
+              <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% else %} {{ form_login.password(class="form-control
+            form-control-lg") }} {% endif %}
+          </div>
+          <div class="form-check">
+            {{ form_login.remember(class="form-check-input") }} {{
+            form_login.remember.label(class="form-check-label") }}
+          </div>
+        </fieldset>
+        <div class="form-group">
+          {{ form_login.submit(class="btn btn-default button5") }}
+        </div>
+        <!-- <small class="text-muted ml-2">
+                <a href="#">Forgot Password?</a>
+            </small> -->
+      </form>
+    </div>
+    <div class="container">
+      <div>
+        <p class="text-muted">
+          Need An Account?
+          <a class="ml-2" href="{{ url_for('users_blueprint.register') }}"
+            >Register Here</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,14 @@
+{% extends "layout.html" %} {% block content %}
+<div class="content-section">
+  <div class="container">
+    <h1>Oops. Page Not Found (404)</h1>
+    <p>
+      That page does not exist. Please try a different one or go to the<a
+        class="ml-2"
+        href="{{ url_for('main_blueprint.home') }}"
+        >Home Page</a
+      >
+    </p>
+  </div>
+</div>
+{% endblock content %}
