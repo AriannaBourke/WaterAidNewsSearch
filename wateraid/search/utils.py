@@ -151,9 +151,12 @@ def filter_query(search, language, filter):
 
 def insert_results(query_results, search, filter, language):
     """ Insert search results into Results collection  """
-    today_date = datetime.now().date().strftime("%Y-%m-%d")
-    Database.results.insert_one({'search_term': search, 'date': today_date,
-                                 'filter': filter, 'language': language, 'query_results': query_results})
+    if query_results == '':
+        pass
+    else:
+        today_date = datetime.now().date().strftime("%Y-%m-%d")
+        Database.results.insert_one({'search_term': search, 'date': today_date,
+                                    'filter': filter, 'language': language, 'query_results': query_results})
 
 
 def filter_parameters(concept_form, entities_form, sentiment_form,

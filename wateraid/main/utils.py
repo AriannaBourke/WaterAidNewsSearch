@@ -30,6 +30,9 @@ def search_query(search):
 
 def insert_results(query_results, search):
     """ Insert query results in Results collection """
-    today_date = datetime.now().date().strftime("%Y-%m-%d")
-    Database.results.insert_one({'search_term': search, 'date': today_date,
-                                 'filter': '', 'language': 'English', 'query_results': query_results})
+    if query_results == '':
+        pass
+    else:
+        today_date = datetime.now().date().strftime("%Y-%m-%d")
+        Database.results.insert_one({'search_term': search, 'date': today_date,
+                                    'filter': '', 'language': 'English', 'query_results': query_results})
